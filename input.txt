@@ -1,5 +1,2 @@
 Albert Einstein:A,B,C,D
 Isaac Newton:A,B,E,F
-Kim Minseok:B,F,G
-Park Mikyung:B,D,H,F
-Kim Munjung:A,B,E,D

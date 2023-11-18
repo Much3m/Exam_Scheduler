@@ -1,32 +1,33 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdbool.h>
+#include "scheduler.h"
 
-#define	MAX_COURSE 30
-#define	MAX_COURSE_NAME 30
-
-typedef struct t_Vertex {
-	char	name[MAX_COURSE_NAME];
-	int		color;
-	bool	visited;
-}Vertex;
-
-/* variables for coloring */
+/*                              variables for coloring                            */
 int m = 0;
 int size = 0;
 int *vcolor;
 bool print = false;
 bool flag = false;
-////////////////////////////
-
+///////////////////////////////////////////////////////////////////////////////////
+/*                              variables for Courses                            */
 char	**courses;
 int		coursecount = 0;
-int		**adj = NULL;	   // 노드간의 연결 상태를 파악하기 위한 인접행렬 선언
+int		**adj = NULL;	                   // 노드간의 연결 상태를 파악하기 위한 인접행렬 선언
+//////////////////////////////////////////////////////////////////////////////////
 
-bool	is_exist(char *name);
-void create_edge2(int **ret, char list[30][30], int index);
+//////////////////////////////////////////////////////////////////////////////////
+/*                      Functions for input txt file                            */
+
+FILE	*open_File(FILE *ptr, char *filename)
+{
+	if (access(filename, F_OK) != -1) {
+		ptr = fopen(filename, "r");
+		read_File(ptr);
+	}
+	else {
+		printf("Error : File open error\n");
+		exit(1);
+	}
+	return (ptr);
+}
 
 void	read_File(FILE *ptr)
 {
@@ -49,8 +50,18 @@ void	read_File(FILE *ptr)
 		}
 	}
 }
+//////////////////////////////////////////////////////////////////////////////////
 
-bool	is_exist(char *name) // vertex 생성 과정에서 이미 목로에 존재하는 과목인지 검사하는 함수
+//////////////////////////////////////////////////////////////////////////////////
+/*                     Functions for creating graph                            */
+void    init_courses(void)
+{
+	courses = (char **)malloc(sizeof(char *) * MAX_COURSE);
+	for (int i = 0; i < MAX_COURSE; i++)
+		courses[i] = (char *)malloc(sizeof(char) * MAX_COURSE);
+}
+
+bool	is_exist(char *name) // node 생성 과정에서 이미 목로에 존재하는 과목인지 검사하는 함수
 {
 	int		i;
 	for (i = 0; i < coursecount; i++) {
@@ -60,55 +71,20 @@ bool	is_exist(char *name) // vertex 생성 과정에서 이미 목로에 존재�
 	return (false);
 }
 
-FILE	*open_File(FILE *ptr, char *filename)
+void	sortCourse(void) // 저장된 과목들을 정렬함
 {
-	if (access(filename, F_OK) != -1) {
-		ptr = fopen(filename, "r");
-		read_File(ptr);
-	}
-	else {
-		printf("Error : File open error\n");
-		exit(1);
-	}
-	return (ptr);
-}
-
-void	createVertexlist(Vertex **list)
-{
-	for(int i = 0; i < coursecount; i++) {
-		Vertex	*new = malloc(sizeof(Vertex));
-		strcpy(new->name, courses[i]);
-		new->color = -1;
-		new->visited = false;
-		list[i] = new;
-	}
-}
-
-void	sortVertex(Vertex **list) // 저장된 과목들을 정렬함
-{
-	Vertex	*tmp;
-	char	*tmp2;
+	char	*tmp;
 	int i, j;
 
 	for (i = 0; i < coursecount - 1; i++) {
 		for (j = 0; j < coursecount - i - 1; j++) { // bubble sorting
-			if (strcmp(list[j]->name, list[j+1]->name) > 0) {
-				tmp = list[j];
-				list[j] = list[j+1];
-				list[j+1] = tmp;
-				tmp2 = courses[j];
+			if (strcmp(courses[j], courses[j+1]) > 0) {
+				tmp = courses[j];
 				courses[j] = courses[j + 1];
-				courses[j+1] = tmp2;
+				courses[j+1] = tmp;
 			}
 		}
 	}
-}
-
-void	**init_courses(void)
-{
-	courses = (char **)malloc(sizeof(char *) * 30);
-	for (int i = 0; i < 30; i++)
-		courses[i] = (char *)malloc(sizeof(char) * 30);
 }
 
 int	**create_edge(FILE *fp) {
@@ -146,7 +122,7 @@ int	**create_edge(FILE *fp) {
 	return (ret);
 }
 
-void create_edge2(int **ret, char list[30][30], int index)
+void create_edge2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index)
 {
 	int	i, j, check[coursecount];
 	for (int i = 0; i < coursecount; i++) {
@@ -172,7 +148,11 @@ void create_edge2(int **ret, char list[30][30], int index)
 	}
 }
 
-bool	promising(int i)
+//////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////
+/*                     Functions for coloring graph                            */
+bool	is_valid(int i)
 {
 	int j = 0;
 	bool	ret = true;
@@ -185,7 +165,7 @@ bool	promising(int i)
 	return (ret);
 }
 
-void	m_coloring(int i)
+void	recursive_coloring(int i)
 {
 	if (i == coursecount)
 	{
@@ -208,35 +188,37 @@ void	m_coloring(int i)
 	else {
 		for (int color = 1; color <= m; color++) {
 			vcolor[i] = color;
-			if (promising(i))
-				m_coloring(i+1);
+			if (is_valid(i))
+				recursive_coloring(i+1);
 		}
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
+/*                              main Function                                   */
 int main(void)
 {
-	int	i, j, k;
+	int	i, j;
 
 	init_courses();
 	FILE *ptr = NULL; // data file을 받기 위한 file pointer 선언
 	ptr = open_File(ptr, "input.txt");
-
-	Vertex *list[coursecount]; // 과목 숫자만큼 포인터배열 선언.
-
-	createVertexlist(list);
-	sortVertex(list);
+	sortCourse();
 
 	adj = create_edge(ptr);
-	printf("\n\t");
+    printf("\n");
+    for(int i = 0; i < coursecount*4 - 7; i++)
+        printf(" ");
+    printf("Adjacent Matirx\n\t");
 
 	for(i = 0; i < coursecount + 1; i++){
 
         for(j = 0; j < coursecount + 1; j++){
             if(i == 0 && j != coursecount)
-                printf("   %s\t", list[j] -> name);
+                printf("   %s\t", courses[j]);
             else if(j == 0)
-                printf("%s\t", list[i - 1] -> name);
+                printf("%s\t", courses[i - 1]);
             if(i != 0 && j != 0)
                 printf("   %d\t", adj[i - 1][j - 1]);
         }
@@ -248,14 +230,14 @@ int main(void)
 		vcolor[i] = -1;
 	for (m = 1; m <= coursecount; m++)
 	{
-		m_coloring(0);
+		recursive_coloring(0);
 		if(flag == true)
 			break;
 	}
 
-	printf("최단 시험 기간 : %d일\n\n",m);
+	printf("\n\n최단 시험 기간 : %d일\n\n",m);
 	printf("가능한 시험 시간표 배치\n");
 	print = true;
-	m_coloring(0);
+	recursive_coloring(0);
 }
 

@@ -89,7 +89,7 @@ void	sortCourse(void) // 저장된 과목들을 정렬함
 	}
 }
 
-int	**create_edge(FILE *fp) {
+int	**create_adj(FILE *fp) {
 	rewind(fp); // filepointer를 초기 위치로 변경.
 	int **ret;
 	int i, j;
@@ -106,25 +106,25 @@ int	**create_edge(FILE *fp) {
 	char	course_list[MAX_COURSE][MAX_COURSE_NAME];
 	int		index = 0;
 
-	while (!feof(fp)) { // fgets의 리턴인 NULL이 파일의 끝인 EOF에 의해 발생한것인지, 오류에의해 발생한 것인지 구분
+	while (!feof(fp)) {
 		if (fgets(buffer, 512, fp) != NULL) { // 개행을 만날때 까지 읽어서 buffer에 저장
 			index = 0;
-			strcpy(word, strtok(buffer, "\n"));
-			strtok(word, ":");
-			token = strtok(NULL, ","); // ,앞까지 읽어서 token에 저장
+			strcpy(word, strtok(buffer, "\n")); // 개행문자를 잘라냄.
+			strtok(word, ":");          // 이름을 잘라냄
+			token = strtok(NULL, ","); // ,을 기준으로 과목을 구분.
 
 			while (token != NULL) { // 학생 한명이 수강하는 과목을 모두 토큰화
 				strcpy(course_list[index], token);
 				index++;
 				token = strtok(NULL, ",");
 			}
-			create_edge2(ret, course_list, index);
+			create_adj2(ret, course_list, index);
 		}
 	}
 	return (ret);
 }
 
-void create_edge2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index)
+void create_adj2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index)
 {
 	int	i, j, check[coursecount];
 	for (int i = 0; i < coursecount; i++) {
@@ -158,8 +158,7 @@ bool	is_valid(int i)
 {
 	int j = 0;
 	bool	ret = true;
-	while (j < i && ret)
-	{
+	while (j < i && ret) {
 		if (adj[i][j] && vcolor[i] == vcolor[j])
 			ret = false;
 		j++;
@@ -169,16 +168,13 @@ bool	is_valid(int i)
 
 void	recursive_coloring(int i)
 {
-	if (i == coursecount)
-	{
+	if (i == coursecount) {
 		flag = true;
-		if(print)
-		{
+		if(print){
 			for(int j = 1; j <=m; j++)
 			{
 				printf("Exam Day %d -> ", j);
-				for (int k = 0; k<coursecount; k++)
-				{
+				for (int k = 0; k<coursecount; k++) {
 					if(vcolor[k] == j)
 						printf("%s ",courses[k]);
 				}
@@ -208,7 +204,7 @@ int main(void)
 	ptr = open_File(ptr, "input.txt");
 	sortCourse();
 
-	adj = create_edge(ptr);
+	adj = create_adj(ptr);
     printf("\n");
     for(int i = 0; i < coursecount*4 - 7; i++)
         printf(" ");

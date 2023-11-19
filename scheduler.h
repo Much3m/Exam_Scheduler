@@ -16,8 +16,8 @@ void	read_File(FILE *ptr);
 FILE	*open_File(FILE *ptr, char *filename);
 
 /*                       Functions for creating graph                          */
-int 	**create_edge(FILE *fp);
-void    create_edge2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index);
+int 	**create_adj(FILE *fp);
+void    create_adj2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index);
 void	sortCourse(void);
 void    init_courses(void);
 

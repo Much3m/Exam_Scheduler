@@ -1,11 +1,13 @@
 #include "scheduler.h"
 
+////////////////////////////////////////////////////////////////////////////////////
 /*                              variables for coloring                            */
 int m = 0;
 int size = 0;
 int *vcolor;
 bool print = false;
 bool flag = false;
+
 ///////////////////////////////////////////////////////////////////////////////////
 /*                              variables for Courses                            */
 char	**courses;
@@ -88,7 +90,7 @@ void	sortCourse(void) // 저장된 과목들을 정렬함
 }
 
 int	**create_edge(FILE *fp) {
-	rewind(fp);
+	rewind(fp); // filepointer를 초기 위치로 변경.
 	int **ret;
 	int i, j;
 
@@ -100,18 +102,18 @@ int	**create_edge(FILE *fp) {
 		for (j = 0; j < coursecount; j++)
 			ret[i][j] = 0;
 	}
-	char input[256], word[256], *token;
+	char    buffer[256], word[256], *token;
 	char	course_list[MAX_COURSE][MAX_COURSE_NAME];
 	int		index = 0;
 
-	while (!feof(fp)) {
-		if (fgets(input, 512, fp) != NULL) {
+	while (!feof(fp)) { // fgets의 리턴인 NULL이 파일의 끝인 EOF에 의해 발생한것인지, 오류에의해 발생한 것인지 구분
+		if (fgets(buffer, 512, fp) != NULL) { // 개행을 만날때 까지 읽어서 buffer에 저장
 			index = 0;
-			strcpy(word, strtok(input, "\n"));
+			strcpy(word, strtok(buffer, "\n"));
 			strtok(word, ":");
-			token = strtok(NULL, ",");
+			token = strtok(NULL, ","); // ,앞까지 읽어서 token에 저장
 
-			while (token != NULL) {
+			while (token != NULL) { // 학생 한명이 수강하는 과목을 모두 토큰화
 				strcpy(course_list[index], token);
 				index++;
 				token = strtok(NULL, ",");
@@ -193,9 +195,9 @@ void	recursive_coloring(int i)
 		}
 	}
 }
-
 //////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////
 /*                              main Function                                   */
 int main(void)
 {

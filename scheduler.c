@@ -118,7 +118,7 @@ int	**create_adj(FILE *fp) {
 				index++;
 				token = strtok(NULL, ",");
 			}
-			create_adj2(ret, course_list, index);
+			create_adj2(ret, course_list, index); // 학생 한명이 수강하는 과목명, 과목수를 넘겨줌
 		}
 	}
 	return (ret);
@@ -128,13 +128,13 @@ void create_adj2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index)
 {
 	int	i, j, check[coursecount];
 	for (int i = 0; i < coursecount; i++) {
-		check[i] = 0;
+		check[i] = 0; // check 배열을 초기화
 	}
 
 	for (i = 0; i < coursecount; i++) {
 		for (j = 0; j < index; j++) {
-			if (strcmp(courses[i], list[j]) == 0)
-				check[i]++;
+			if (strcmp(courses[i], list[j]) == 0) // 전체과목명, 학생이 수강하는 과목명을 비교
+				check[i]++; // 일치하는 과목이 있다면 check배열을 증가.
 		}
 	}
 

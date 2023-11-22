@@ -197,7 +197,7 @@ void	recursive_coloring(int i)
 /*                              main Function                                   */
 int main(void)
 {
-	int	i, j;
+	// int	i, j;
 
 	init_courses();
 	FILE *ptr = NULL; // data file을 받기 위한 file pointer 선언
@@ -205,27 +205,25 @@ int main(void)
 	sortCourse();
 
 	adj = create_adj(ptr);
-    printf("\n");
-    for(int i = 0; i < coursecount*4 - 7; i++)
-        printf(" ");
-    printf("Adjacent Matirx\n\t");
+    // printf("\n");
+    // for(int i = 0; i < coursecount*4 - 7; i++)
+    //     printf(" ");
+    // printf("Adjacent Matirx\n\t");
 
-	for(i = 0; i < coursecount + 1; i++){
+	// for(i = 0; i < coursecount + 1; i++){
 
-        for(j = 0; j < coursecount + 1; j++){
-            if(i == 0 && j != coursecount)
-                printf("   %s\t", courses[j]);
-            else if(j == 0)
-                printf("%s\t", courses[i - 1]);
-            if(i != 0 && j != 0)
-                printf("   %d\t", adj[i - 1][j - 1]);
-        }
-        printf("\n");
-    }
+    //     for(j = 0; j < coursecount + 1; j++){
+    //         if(i == 0 && j != coursecount)
+    //             printf("   %s\t", courses[j]);
+    //         else if(j == 0)
+    //             printf("%s\t", courses[i - 1]);
+    //         if(i != 0 && j != 0)
+    //             printf("   %d\t", adj[i - 1][j - 1]);
+    //     }
+    //     printf("\n");
+    // }
 
 	vcolor = malloc(sizeof(int) * coursecount);
-	for (int i = 0; i < coursecount; i++)
-		vcolor[i] = -1;
 	for (m = 1; m <= coursecount; m++) // 사용가능한 색상의 숫자를 증가시켜가면서 coloring.
 	{
 		recursive_coloring(0);
@@ -233,7 +231,7 @@ int main(void)
 			break;
 	}
 
-	printf("\n\n최단 시험 기간 : %d일\n\n",m);
+	printf("최단 시험 기간 : %d일\n\n",m);
 	printf("가능한 시험 시간표 배치\n");
 	print = true;
 	recursive_coloring(0);

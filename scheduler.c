@@ -140,8 +140,8 @@ void create_adj2(int **ret, char list[MAX_COURSE][MAX_COURSE_NAME], int index)
 
 	for (i = 0; i < coursecount; i++) {
 		if (check[i] == 1) {
-			for (j = 0; j < coursecount; j++) {
-				if (check[j] == 1 && i != j) {
+			for (j = 0; j < coursecount; j++) { 
+				if (check[j] == 1 && i != j) { // i과목, j과목을 모두 수강한다면 연결.
 					ret[i][j] = 1;
 					ret[j][i] = 1;
 				}
@@ -158,23 +158,23 @@ bool	is_valid(int i)
 {
 	int j = 0;
 	bool	ret = true;
-	while (j < i && ret) {
-		if (adj[i][j] && vcolor[i] == vcolor[j])
-			ret = false;
+	while (j < i && ret) { // 인접행렬이 대칭이기 때문에 i보다 작은 칸 까지만 유효성 검사
+		if (adj[i][j] && vcolor[i] == vcolor[j]) // 연결되어있고 칠해진 색상이 같다면
+			ret = false; // false를 리턴
 		j++;
 	}
-	return (ret);
+	return (ret); // 아니라면 true 리턴
 }
 
 void	recursive_coloring(int i)
 {
-	if (i == coursecount) {
-		flag = true;
-		if(print){
+	if (i == coursecount) { // 색을 끝까지 칠했다면
+		flag = true; // flag를 true로 설정
+		if(print){ // print가 true라면 경우의 수를 출력
 			for(int j = 1; j <=m; j++)
 			{
 				printf("Exam Day %d -> ", j);
-				for (int k = 0; k<coursecount; k++) {
+				for (int k = 0; k<coursecount; k++) { // 같은 색상을 가진 과목끼리 출력
 					if(vcolor[k] == j)
 						printf("%s ",courses[k]);
 				}
@@ -185,9 +185,9 @@ void	recursive_coloring(int i)
 	}
 	else {
 		for (int color = 1; color <= m; color++) {
-			vcolor[i] = color;
-			if (is_valid(i))
-				recursive_coloring(i+1);
+			vcolor[i] = color; // 1~m까지의 색상을 대입해봄
+			if (is_valid(i)) // 위에서 대입한 색상이 유효하다면
+				recursive_coloring(i+1); // 함수를 재귀적으로 호출하여 다음칸에 색칠
 		}
 	}
 }
@@ -226,10 +226,10 @@ int main(void)
 	vcolor = malloc(sizeof(int) * coursecount);
 	for (int i = 0; i < coursecount; i++)
 		vcolor[i] = -1;
-	for (m = 1; m <= coursecount; m++)
+	for (m = 1; m <= coursecount; m++) // 사용가능한 색상의 숫자를 증가시켜가면서 coloring.
 	{
 		recursive_coloring(0);
-		if(flag == true)
+		if(flag == true) // 최초로 완성한다면 중단 -> 최소m값을 찾음.
 			break;
 	}
 

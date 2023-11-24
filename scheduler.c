@@ -20,12 +20,12 @@ int		**adj = NULL;	                   // 노드간의 연결 상태를 파악하
 
 FILE	*open_File(FILE *ptr, char *filename)
 {
-	if (access(filename, F_OK) != -1) {
-		ptr = fopen(filename, "r");
+	if (access(filename, F_OK) != -1) {   // 존재하는 file인지 확인. -1이면 존재하지 않는 파일
+		ptr = fopen(filename, "r");       // 파일을 open
 		read_File(ptr);
 	}
 	else {
-		printf("Error : File open error\n");
+		printf("Error : File open error\n"); // 파일이 존재하지 않는다면 Error 출력후 종료.
 		exit(1);
 	}
 	return (ptr);
@@ -33,13 +33,13 @@ FILE	*open_File(FILE *ptr, char *filename)
 
 void	read_File(FILE *ptr)
 {
-	char	input[256], word[256];
+	char	buffer[256], single[256];
 	char	*token;
 
 	while (!feof(ptr)) { // file의 끝에 도달하면 0 이 아닌 값을 반환
-		if (fgets(input, 512, ptr) != NULL) {
-			strcpy(word, strtok(input, "\n")); // 개행을 구분자로 입력을 분리
-			strtok(word, ":"); // 학생명을 제거
+		if (fgets(buffer, 512, ptr) != NULL) {
+			strcpy(single, strtok(buffer, "\n")); // 개행을 구분자로 입력을 분리
+			strtok(single, ":"); // 학생명을 제거
 			token = strtok(NULL, ","); // ,기준으로 과목들을 분리함 (기존위치에서 재탐색 )
 
 			while (token != NULL) {
@@ -102,15 +102,15 @@ int	**create_adj(FILE *fp) {
 		for (j = 0; j < coursecount; j++)
 			ret[i][j] = 0;
 	}
-	char    buffer[256], word[256], *token;
+	char    buffer[256], single[256], *token;
 	char	course_list[MAX_COURSE][MAX_COURSE_NAME];
 	int		index = 0;
 
 	while (!feof(fp)) {
 		if (fgets(buffer, 512, fp) != NULL) { // 개행을 만날때 까지 읽어서 buffer에 저장
 			index = 0;
-			strcpy(word, strtok(buffer, "\n")); // 개행문자를 잘라냄.
-			strtok(word, ":");          // 이름을 잘라냄
+			strcpy(single, strtok(buffer, "\n")); // 개행문자를 잘라냄.
+			strtok(single, ":");          // 이름을 잘라냄
 			token = strtok(NULL, ","); // ,을 기준으로 과목을 구분.
 
 			while (token != NULL) { // 학생 한명이 수강하는 과목을 모두 토큰화

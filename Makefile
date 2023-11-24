@@ -7,6 +7,8 @@ SRCS =	scheduler.c
 
 OBJS = $(SRCS:.c=.o)
 
+OUTPUT = a.txt
+
 all: $(NAME)
 
 %.o: %.c
@@ -19,7 +21,7 @@ clean:
 	rm -rf $(OBJS)
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(NAME) $(OUTPUT)
 
 re: fclean all
 

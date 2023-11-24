@@ -157,7 +157,7 @@ bool	is_valid(int i)
 {
 	int j = 0;
 	bool	ret = true;
-	while (j < i && ret) { // 인접행렬이 대칭이기 때문에 i보다 작은 칸 까지만 유효성 검사
+	while (j < i && ret) { // 배열의 인덱스 순서대로 칠하기 때문에 현재 인덱스 이전 노드들과 비교
 		if (adj[i][j] && vcolor[i] == vcolor[j]) // 연결되어있고 칠해진 색상이 같다면
 			ret = false; // false를 리턴
 		j++;

@@ -5,8 +5,7 @@
 int m = 0;
 int size = 0;
 int *vcolor;
-bool print = false;
-bool flag = false;
+int flag = 0;
 
 ///////////////////////////////////////////////////////////////////////////////////
 /*                              variables for Courses                            */
@@ -169,8 +168,10 @@ bool	is_valid(int i)
 void	recursive_coloring(int i)
 {
 	if (i == coursecount) { // 색을 끝까지 칠했다면
-		flag = true; // flag를 true로 설정
-		if(print){ // print가 true라면 경우의 수를 출력
+		flag++;
+        if (flag == 1)
+            printf("최단 시험 기간 : %d일\n\n가능한 시험 시간표 배치\n",m);
+		if(flag){ // print가 true라면 경우의 수를 출력
 			for(int j = 1; j <=m; j++)
 			{
 				printf("Exam Day %d -> ", j);
@@ -227,13 +228,8 @@ int main(void)
 	for (m = 1; m <= coursecount; m++) // 사용가능한 색상의 숫자를 증가시켜가면서 coloring.
 	{
 		recursive_coloring(0);
-		if(flag == true) // 최초로 완성한다면 중단 -> 최소m값을 찾음.
+		if(flag) // 최초로 완성한다면 중단 -> 최소m값을 찾음.
 			break;
 	}
-
-	printf("최단 시험 기간 : %d일\n\n",m);
-	printf("가능한 시험 시간표 배치\n");
-	print = true;
-	recursive_coloring(0);
 }
 

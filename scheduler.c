@@ -2,15 +2,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////
 /*                              variables for coloring                            */
-int m = 0;
-int size = 0;
-int *vcolor;
-int flag = 0;
+int m = 0;                                  // 최대 사용 가능 색상 지정                        
+int *vcolor;                                // 각 노드의 색을 저장할 배열
+int flag = 0;                               // 목표 달성 여부를 확인하는 플래그
 
 ///////////////////////////////////////////////////////////////////////////////////
 /*                              variables for Courses                            */
-char	**courses;
-int		coursecount = 0;
+char	**courses;                         // 과목명을 저장할 이차원 배열 선언
+int		coursecount = 0;                   // 과목의 개수를 저장할 변수 선언
 int		**adj = NULL;	                   // 노드간의 연결 상태를 파악하기 위한 인접행렬 선언
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +41,7 @@ void	read_File(FILE *ptr)
 			token = strtok(NULL, ","); // ,기준으로 과목들을 분리함 (기존위치에서 재탐색 )
 
 			while (token != NULL) {
-				if (is_exist(token) == false) {
+				if (is_exist(token) == false) { // 기존에 저장된 과목이 아니라면 추가
 					strcpy(courses[coursecount], token);
 					coursecount++;
 				}
@@ -55,7 +54,7 @@ void	read_File(FILE *ptr)
 
 //////////////////////////////////////////////////////////////////////////////////
 /*                     Functions for creating graph                            */
-void    init_courses(void)
+void    init_courses(void) // 과목명을 저장할 이차원 배열의 선언 및 초기화
 {
 	courses = (char **)malloc(sizeof(char *) * MAX_COURSE);
 	for (int i = 0; i < MAX_COURSE; i++)
@@ -66,7 +65,7 @@ bool	is_exist(char *name) // node 생성 과정에서 이미 목로에 존재하
 {
 	int		i;
 	for (i = 0; i < coursecount; i++) {
-		if (strcmp(courses[i], name) == 0)
+		if (strcmp(courses[i], name) == 0) // 일치하는 과목이 이미 존재한다면 true리턴
 			return (true);
 	}
 	return (false);
@@ -78,7 +77,7 @@ void	sortCourse(void) // 저장된 과목들을 정렬함
 	int i, j;
 
 	for (i = 0; i < coursecount - 1; i++) {
-		for (j = 0; j < coursecount - i - 1; j++) { // bubble sorting
+		for (j = 0; j < coursecount - i - 1; j++) {     // bubble sorting
 			if (strcmp(courses[j], courses[j+1]) > 0) {
 				tmp = courses[j];
 				courses[j] = courses[j + 1];
@@ -198,36 +197,17 @@ void	recursive_coloring(int i)
 /*                              main Function                                   */
 int main(void)
 {
-	// int	i, j;
-
-	init_courses();
-	FILE *ptr = NULL; // data file을 받기 위한 file pointer 선언
+	init_courses();   // 과목을 저장하기 위한 이차원배열 선언
+	FILE *ptr = NULL; // input을 받기 위한 file pointer 선언
 	ptr = open_File(ptr, "input.txt");
 	sortCourse();
 
-	adj = create_adj(ptr);
-    // printf("\n");
-    // for(int i = 0; i < coursecount*4 - 7; i++)
-    //     printf(" ");
-    // printf("Adjacent Matirx\n\t");
+	adj = create_adj(ptr); // 인접행렬 생성
 
-	// for(i = 0; i < coursecount + 1; i++){
-
-    //     for(j = 0; j < coursecount + 1; j++){
-    //         if(i == 0 && j != coursecount)
-    //             printf("   %s\t", courses[j]);
-    //         else if(j == 0)
-    //             printf("%s\t", courses[i - 1]);
-    //         if(i != 0 && j != 0)
-    //             printf("   %d\t", adj[i - 1][j - 1]);
-    //     }
-    //     printf("\n");
-    // }
-
-	vcolor = malloc(sizeof(int) * coursecount);
+	vcolor = malloc(sizeof(int) * coursecount); // 각 노드의 color를 저장할 배열 선언.
 	for (m = 1; m <= coursecount; m++) // 사용가능한 색상의 숫자를 증가시켜가면서 coloring.
 	{
-		recursive_coloring(0);
+		recursive_coloring(0); // 0번 노드부터 색칠 시작
 		if(flag) // 최초로 완성한다면 중단 -> 최소m값을 찾음.
 			break;
 	}

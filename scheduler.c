@@ -6,8 +6,7 @@ int m = 0;                                  // 최대 사용 가능 색상 지�
 int *vcolor;                                // 각 노드의 색을 저장할 배열
 int flag = 0;                               // 목표 달성 여부를 확인하는 플래그
 int print = 0;
-int total_case = 0;
-
+int total_case_count = 0;
 ///////////////////////////////////////////////////////////////////////////////////
 /*                              variables for Courses                            */
 char	**courses;                         // 과목명을 저장할 이차원 배열 선언
@@ -172,7 +171,7 @@ void	recursive_coloring(int i)
 		flag++;
         if (print == 1)
             printf("최단 시험 기간 : %d일\n\n가능한 시험 시간표 배치\n",m);
-		if(print != 0 && print <= total_case){ // print가 true라면 경우의 수를 출력
+		if(print != 0 && print <= total_case_count){ // print가 true라면 경우의 수를 출력
 			for(int j = 1; j <=m; j++)
 			{
 				printf("Exam Day %d -> ", j);
@@ -223,8 +222,8 @@ int main(void)
 			break;
 	}
     print++; // 출력을 활성화
-    total_case = flag / factorial(m); // 최소한의 경우의수를 구함 (중복케이스 제거)
-    recursive_coloring(0);
+    total_case_count = flag / factorial(m); // 중복케이스 제거 : 전체 케이스 / m! 
+    recursive_coloring(0); // 출력을 활성화 한채로 recursive coloring 함수를 재실행하여 결과 출력
     return (0);
 }
 

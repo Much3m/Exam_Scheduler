@@ -5,6 +5,8 @@
 int m = 0;                                  // 최대 사용 가능 색상 지정                        
 int *vcolor;                                // 각 노드의 색을 저장할 배열
 int flag = 0;                               // 목표 달성 여부를 확인하는 플래그
+int print = 0;
+int total_case = 0;
 
 ///////////////////////////////////////////////////////////////////////////////////
 /*                              variables for Courses                            */
@@ -168,9 +170,9 @@ void	recursive_coloring(int i)
 {
 	if (i == coursecount) { // 색을 끝까지 칠했다면
 		flag++;
-        if (flag == 1)
+        if (print == 1)
             printf("최단 시험 기간 : %d일\n\n가능한 시험 시간표 배치\n",m);
-		if(flag){ // print가 true라면 경우의 수를 출력
+		if(print != 0 && print <= total_case){ // print가 true라면 경우의 수를 출력
 			for(int j = 1; j <=m; j++)
 			{
 				printf("Exam Day %d -> ", j);
@@ -180,7 +182,8 @@ void	recursive_coloring(int i)
 				}
 				printf("\n");
 			}
-		printf("\n");
+		    printf("\n");
+            print++;
 		}
 	}
 	else {
@@ -190,6 +193,14 @@ void	recursive_coloring(int i)
 				recursive_coloring(i+1); // 함수를 재귀적으로 호출하여 다음칸에 색칠
 		}
 	}
+}
+
+int factorial(int a) // 최소한의 경우의 수를 구하기위한 factorial util function
+{
+    int ret = 1;
+    for (;a >=1; a--)
+        ret = ret * a;
+    return (ret);
 }
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -211,5 +222,9 @@ int main(void)
 		if(flag) // 최초로 완성한다면 중단 -> 최소m값을 찾음.
 			break;
 	}
+    print++; // 출력을 활성화
+    total_case = flag / factorial(m); // 최소한의 경우의수를 구함 (중복케이스 제거)
+    recursive_coloring(0);
+    return (0);
 }
 

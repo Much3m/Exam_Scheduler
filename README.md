@@ -1,5 +1,5 @@
 # Midterm Scheduling Project
-
+2023-2 서울시립대학교 Cprogramming 강의에서 이루어진 Midterm Scheduling project.
 
 ## Getting Started
 
